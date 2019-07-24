@@ -15,28 +15,35 @@ public final class ImmutableQueue<T> implements Queue<T> {
 
     @Override
     public Queue<T> enQueue(T t) {
-        queue.addLast(t);
-        ImmutableQueue<T> newImmutableQueue = new ImmutableQueue<>(queue);
-        queue.removeLast();
+        ImmutableQueue<T> newImmutableQueue;
+        synchronized (queue) {
+            queue.addLast(t);
+            newImmutableQueue = new ImmutableQueue<>(queue);
+            queue.removeLast();
 
+        }
         return newImmutableQueue;
     }
 
     @Override
     public Queue<T> deQueue() {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException();
         }
-        T dequeuedTmp = queue.removeFirst();
-        ImmutableQueue<T> newImmutableQueue = new ImmutableQueue<>(queue);
-        queue.addFirst(dequeuedTmp);
+
+        ImmutableQueue<T> newImmutableQueue;
+        synchronized (queue) {
+            T dequeuedTmp = queue.removeFirst();
+            newImmutableQueue = new ImmutableQueue<>(queue);
+            queue.addFirst(dequeuedTmp);
+        }
 
         return newImmutableQueue;
     }
 
     @Override
     public T head() {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new IndexOutOfBoundsException();
         }
         return queue.getFirst();
