@@ -6,7 +6,7 @@ public final class ImmutableQueue<T> implements Queue<T> {
     private final ArrayDeque<T> queue;
 
     public ImmutableQueue(ArrayDeque<T> queue) {
-        this.queue = queue.clone();
+        this.queue = queue;
     }
 
     public ImmutableQueue() {
@@ -17,10 +17,9 @@ public final class ImmutableQueue<T> implements Queue<T> {
     public Queue<T> enQueue(T t) {
         ImmutableQueue<T> newImmutableQueue;
         synchronized (queue) {
-            queue.addLast(t);
-            newImmutableQueue = new ImmutableQueue<>(queue);
-            queue.removeLast();
-
+            ArrayDeque<T> newQueue = queue.clone();
+            newQueue.addLast(t);
+            newImmutableQueue = new ImmutableQueue<>(newQueue);
         }
         return newImmutableQueue;
     }
@@ -30,12 +29,11 @@ public final class ImmutableQueue<T> implements Queue<T> {
         if (isEmpty()) {
             throw new IndexOutOfBoundsException();
         }
-
         ImmutableQueue<T> newImmutableQueue;
         synchronized (queue) {
-            T dequeuedTmp = queue.removeFirst();
-            newImmutableQueue = new ImmutableQueue<>(queue);
-            queue.addFirst(dequeuedTmp);
+            ArrayDeque<T> newQueue = queue.clone();
+            newQueue.removeFirst();
+            newImmutableQueue = new ImmutableQueue<>(newQueue);
         }
 
         return newImmutableQueue;
