@@ -35,7 +35,6 @@ public final class ImmutableQueue<T> implements Queue<T> {
             newQueue.removeFirst();
             newImmutableQueue = new ImmutableQueue<>(newQueue);
         }
-
         return newImmutableQueue;
     }
 
